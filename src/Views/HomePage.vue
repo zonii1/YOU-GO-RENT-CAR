@@ -1,34 +1,122 @@
 <template>
   <v-app>
-    <v-app-bar
-        :elevate-on-scroll="true"
-        flat
-        :class="scrolled ? 'scrolled-navbar' : 'transparent-navbar'"
-    >
-      <v-toolbar-title></v-toolbar-title>
-      <v-img src="/yu logo.PNG"> </v-img>
-      <v-spacer></v-spacer>
+    <v-container  fluid class="main pt-10">
 
-      <div class="navbar-items">
-        <v-btn text class="navbar-text" href="#">HOME</v-btn>
-        <v-btn text class="navbar-text" href="#">POSLOVNICE</v-btn>
-        <v-btn text class="navbar-text" href="#">POSEBNE PONUDE</v-btn>
-        <v-btn text class="navbar-text" href="#">PITANJA</v-btn>
-        <v-btn text class="navbar-text" href="#">KONTAKT</v-btn>
-        <v-btn text class="navbar-text" href="#">VIŠE</v-btn>
-      </div>
+      <v-card class="ma-0 pa-0 background-image">
+        <v-row class="mt-10">
+          <v-col>
+            <div class="text-content">
+              <h1 class="main-title">YOU GO<br /><span class="highlight">RENT</span></h1>
+              <p class="main-subtitle">
+                Where every mile feels like a smile! <br />
+                Experience the joy of the open road with our top rental options. <br />
+                Every kilometer feels even sweeter!
+              </p>
+              <v-btn class="join-us-button">JOIN US</v-btn>
+            </div>
+          </v-col>
 
-      <v-spacer></v-spacer>
+          <v-col>
+            <v-card class="login-card mx-auto mt-6" max-width="400">
+              <v-card-title class="login-title">
+                <h2>Login Here</h2>
+              </v-card-title>
+              <v-card-text>
+                <v-text-field label="Enter Email Here" type="email" class="login-field"></v-text-field>
+                <v-text-field label="Enter Password Here" type="password" class="login-field"></v-text-field>
+                <v-btn class="login-button" block>Login</v-btn>
+                <v-divider class="my-4"></v-divider>
+                <p class="text-center">
+                  Don't have an account?<br />
+                  <v-btn text class="signup-link" href="#">Sign up</v-btn> here
+                </p>
+                <p class="text-center">Log in with</p>
+                <div class="social-icons">
+                  <v-btn icon class="social-icon-btn">
+                    <v-icon>mdi-facebook</v-icon>
+                  </v-btn>
+                  <v-btn icon class="social-icon-btn">
+                    <v-icon>mdi-instagram</v-icon>
+                  </v-btn>
+                  <v-btn icon class="social-icon-btn">
+                    <v-icon>mdi-twitter</v-icon>
+                  </v-btn>
+                  <v-btn icon class="social-icon-btn">
+                    <v-icon>mdi-google</v-icon>
+                  </v-btn>
+                  <v-btn icon class="social-icon-btn">
+                    <v-icon>mdi-skype</v-icon>
+                  </v-btn>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card>
 
-      <v-text-field
-          solo
-          hide-details
-          placeholder="Type here"
-          class="mr-2 search-text-field"
-      ></v-text-field>
-      <v-btn class="search-button">Search</v-btn>
-    </v-app-bar>
-    <router-view></router-view>
+      <!-- Car Rental Section -->
+      <v-container>
+        <!-- Pick-Up and Drop-Off Section -->
+        <v-row class="pick-drop-section">
+          <v-col cols="12" md="3">
+            <v-radio-group v-model="pickDrop" row>
+              <v-radio label="Pick - Up" value="pick-up"></v-radio>
+              <v-radio label="Drop - Off" value="drop-off"></v-radio>
+            </v-radio-group>
+          </v-col>
+          <!-- Pick-Up and Drop-Off Fields -->
+          <v-col cols="12" md="3">
+            <v-select
+                label="Pick-Up City"
+                :items="cities"
+                v-model="pickUpCity"
+            ></v-select>
+            <v-select
+                label="Drop-Off City"
+                :items="cities"
+                v-model="dropOffCity"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="3">
+            <v-text-field label="Pick-Up Date" type="date" v-model="pickUpDate"></v-text-field>
+            <v-text-field label="Drop-Off Date" type="date" v-model="dropOffDate"></v-text-field>
+          </v-col>
+          <v-col cols="12" md="3">
+            <v-text-field label="Pick-Up Time" type="time" v-model="pickUpTime"></v-text-field>
+            <v-text-field label="Drop-Off Time" type="time" v-model="dropOffTime"></v-text-field>
+          </v-col>
+        </v-row>
+
+        <v-divider class="my-6"></v-divider>
+
+        <!-- Popular Cars Section -->
+        <v-row>
+          <v-col>
+            <h2>Popular Cars</h2>
+          </v-col>
+        </v-row>
+        <v-row>
+          <!-- Ensure all columns use the same width and class -->
+          <v-col v-for="car in popularCars" :key="car.name" cols="12" sm="6" md="3">
+            <v-card class="car-card">
+              <v-card-title>{{ car.name }}</v-card-title>
+              <v-card-subtitle>{{ car.type }}</v-card-subtitle>
+              <v-card-text>
+                <v-img :width="300" cover :src="car.image"></v-img>
+                <div class="d-flex justify-space-between">
+                  <span>{{ car.tank }}</span>
+                  <span>{{ car.transmission }}</span>
+                  <span>{{ car.capacity }} People</span>
+                </div>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn class="car-button" block>{{ car.price }}/day</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-container>
   </v-app>
 </template>
 
@@ -191,7 +279,7 @@ html, body, v-app, v-container {
 
 /* Ensure the background image starts from the top and covers the entire area */
 .background-image {
-  background-image: url('../src/assets/background.png');
+  background-image: url('../assets/background.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -293,7 +381,7 @@ html, body, v-app, v-container {
 
 /* Set the background image */
 .background-image {
-  background-image: url('../src/assets/background.png');
+  background-image: url('../assets/background.png');
   background-size: cover;
   background-position: center;
   height: 100vh;
