@@ -1,63 +1,153 @@
 <template>
-  <div>
-    <h1 class="container">Image Upload Vue.js</h1>
-    <div>
-      <div class="file-container">
-        <div>
-          <form>
-            <input
-                type="file"
-                id="media"
-                accept="image/*"
-                multiple
-                @change="(event) => handelFileUpload(event)"
-            />
-            <div>
-              <section>
-                <v-img sizes="10" src="/uploadImageIcon.png" />
+  <div class="d-flex justify-center">
+    <v-card class="d-flex justify-center" width="50%" color="primary">
+      <div class="mt-15">
+        <h1>Add New Car</h1>
+        <v-form ref="form">
+          <!-- Car Name -->
+          <v-text-field
+              v-model="form.carName"
+              label="Car Name"
+              hint="Enter car name"
+              required
+              outlined
+          ></v-text-field>
 
-                <p>Upload Your answer here.</p>
-                <p>Minimum file size 50MB</p>
-              </section>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div>
-        <div class="images">
-          <div
-              v-for="(src, index) in imageSrc"
-              :key="index"
-              class="images-lists"
-          >
-            <div class="image-container">
-              <img :src="src" id="output" class="image-style" />
-            </div>
-            <div class="cross-icon" v-if="imageSrc">
-              <img src="./assets/cancel.svg" @click="removeItem(index)" />
-            </div>
+          <!-- Car Type -->
+          <v-select
+              v-model="form.carType"
+              :items="carTypes"
+              label="Car Type"
+              hint="Select car type"
+              required
+              outlined
+          ></v-select>
 
-            <p style="width: 150px" class="line-clamp-1 text-center">
-              {{ selectedFiles[index].name }}
-            </p>
+          <!-- Price per Day -->
+          <v-text-field
+              v-model="form.pricePerDay"
+              label="Price Per Day (USD)"
+              hint="Enter price per day"
+              type="number"
+              required
+              outlined
+          ></v-text-field>
+
+          <!-- Seating Capacity -->
+          <v-text-field
+              v-model="form.seatingCapacity"
+              label="Seating Capacity"
+              hint="Enter seating capacity"
+              type="number"
+              required
+              outlined
+          ></v-text-field>
+
+          <!-- Fuel Type -->
+          <v-select
+              v-model="form.fuelType"
+              :items="fuelTypes"
+              label="Fuel Type"
+              hint="Select fuel type"
+              required
+              outlined
+          ></v-select>
+
+          <!-- Transmission Type -->
+          <v-select
+              v-model="form.transmission"
+              :items="transmissionTypes"
+              label="Transmission Type"
+              hint="Select transmission type"
+              required
+              outlined
+          ></v-select>
+
+          <!-- Availability -->
+          <v-checkbox
+              v-model="form.available"
+              label="Available"
+              hint="Check if car is available for rent"
+          ></v-checkbox>
+
+          <!-- Upload Car Images -->
+          <h3>Upload Car Images</h3>
+          <div class="file-container">
+            <form>
+              <input
+                  type="file"
+                  id="media"
+                  accept="image/*"
+                  multiple
+                  @change="handleFileUpload"
+              />
+              <div>
+                <section>
+                  <v-img width="30" src="/uploadImageIcon.png" />
+                  <p>Upload car images here. Max size: 50MB</p>
+                </section>
+              </div>
+            </form>
           </div>
-        </div>
+
+          <!-- Uploaded Images -->
+          <div>
+            <div class="images">
+              <div
+                  v-for="(src, index) in imageSrc"
+                  :key="index"
+                  class="images-lists"
+              >
+                <div class="image-container">
+                  <img :src="src" id="output" class="image-style" />
+                </div>
+                <div class="cross-icon">
+                  <img width="30" src="/cancel.png" @click="removeItem(index)" />
+                </div>
+                <p class="text-center">
+                  {{ selectedFiles[index].name }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <v-btn color="success" class="mt-3" @click="submitForm">Add Car</v-btn>
+        </v-form>
       </div>
-    </div>
+    </v-card>
   </div>
 </template>
+
 <script setup>
 import { ref } from "vue";
+import { db, storage } from "@/firebase"; // Firebase Firestore and Storage
+import { collection, addDoc } from "firebase/firestore"; // Firestore
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"; // Storage
 
+// Car details form data
 const form = ref({
-  media: {},
+  carName: '',
+  carType: '',
+  pricePerDay: null,
+  seatingCapacity: null,
+  fuelType: '',
+  transmission: '',
+  available: false,
+  media: {}
 });
 
-const imageSrc = ref([]);
+// Dropdown options
+const carTypes = ['Sedan', 'SUV', 'Hatchback', 'Convertible', 'Coupe', 'Van', 'Truck'];
+const fuelTypes = ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
+const transmissionTypes = ['Manual', 'Automatic'];
 
+// Image handling
+const imageSrc = ref([]);
 const selectedFiles = ref([]);
-const handelFileUpload = (e) => {
-  var files = e.target.files || e.dataTransfer.files;
+
+const handleFileUpload = (e) => {
+  const files = e.target.files;
   if (!files.length) return;
 
   for (let i = 0; i < files.length; i++) {
@@ -65,110 +155,83 @@ const handelFileUpload = (e) => {
     const src = URL.createObjectURL(files[i]);
     imageSrc.value.push(src);
   }
-  console.log(selectedFiles.value, "seldjhfdh fikes");
-
-  form.value.media = e.target.files[0];
-  console.log(form.value.media, "file upload");
-
-  console.log("files already uploaded", imageSrc.value);
 };
 
 const removeItem = (index) => {
   imageSrc.value.splice(index, 1);
+  selectedFiles.value.splice(index, 1);
+};
+
+// Upload images to Firebase Storage and save data to Firestore
+const submitForm = async () => {
+  try {
+    // Step 1: Upload all images to Firebase Storage
+    const imageUrls = [];
+
+    for (const file of selectedFiles.value) {
+      const storagePath = `cars/${file.name}`;
+      const imageRef = storageRef(storage, storagePath);
+      await uploadBytes(imageRef, file);
+      const downloadURL = await getDownloadURL(imageRef);
+      imageUrls.push(downloadURL); // Collect all image URLs
+    }
+
+    // Step 2: Add car details to Firestore
+    const carData = {
+      carName: form.value.carName,
+      carType: form.value.carType,
+      pricePerDay: form.value.pricePerDay,
+      seatingCapacity: form.value.seatingCapacity,
+      fuelType: form.value.fuelType,
+      transmission: form.value.transmission,
+      available: form.value.available,
+      imageUrls: imageUrls // Store all image URLs
+    };
+
+    const docRef = await addDoc(collection(db, "cars"), carData);
+    console.log("Document written with ID: ", docRef.id);
+  } catch (error) {
+    console.error("Error adding car: ", error);
+  }
 };
 </script>
 
-
 <style>
-.container {
-  margin-bottom: 40px;
-  display: flex;
-  flex-direction: column;
-}
+/* Add your custom styling here */
 .file-container {
   position: relative;
   cursor: pointer;
 }
 form {
-  width: 500px !important;
-  position: absolute;
-  top: 55%;
-  left: 0;
-  margin-top: -100px;
   width: 100%;
-  height: 90px;
   border-radius: 5px;
   border: 1.5px dashed #a0a0a0;
   cursor: pointer;
-}
-form div {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 20px;
   text-align: center;
 }
-form input {
-  position: absolute;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  outline: none;
-  opacity: 0;
-}
-form button {
-  margin: 0;
-  color: #fff;
-  background: #16a085;
-  border: none;
-  width: 508px;
-  height: 35px;
-  margin-top: -20px;
-  margin-left: -4px;
-  border-radius: 4px;
-  border-bottom: 4px solid #117a60;
-  transition: all 0.2s ease;
-  outline: none;
-}
-form button:hover {
-  background: #149174;
-  color: #0c5645;
-}
-form button:active {
-  border: 0;
-}
-
 .images {
-  position: relative;
-  margin-top: 100px;
   display: flex;
-  flex-direction: row;
   justify-content: center;
+  margin-top: 20px;
 }
-
 .images-lists {
-  position: relative;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin: 10px;
+  text-align: center;
 }
-
 .image-container {
-  padding: 4px;
-  border: 0.5px solid #a0a0a0;
+  border: 1px solid #a0a0a0;
   border-radius: 10px;
+  padding: 4px;
 }
-
 .image-style {
   height: 150px;
   width: 150px;
   object-fit: cover;
 }
-
 .cross-icon {
   position: absolute;
-  top: 0%;
+  top: 0;
   right: 0;
   cursor: pointer;
 }

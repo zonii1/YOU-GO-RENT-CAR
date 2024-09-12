@@ -22,9 +22,19 @@
                 <h2>Login Here</h2>
               </v-card-title>
               <v-card-text>
-                <v-text-field label="Enter Email Here" type="email" class="login-field"></v-text-field>
-                <v-text-field label="Enter Password Here" type="password" class="login-field"></v-text-field>
-                <v-btn class="login-button" block>Login</v-btn>
+                <v-text-field
+                    v-model="email"
+                    label="Enter Email Here"
+                    type="email"
+                    class="login-field"
+                ></v-text-field>
+                <v-text-field
+                    v-model="password"
+                    label="Enter Password Here"
+                    type="password"
+                    class="login-field"
+                ></v-text-field>
+                <v-btn class="login-button" block @click="login">Login</v-btn>
                 <v-divider class="my-4"></v-divider>
                 <p class="text-center">
                   Don't have an account?<br />
@@ -57,35 +67,7 @@
       <!-- Car Rental Section -->
       <v-container>
         <!-- Pick-Up and Drop-Off Section -->
-        <v-row class="pick-drop-section">
-          <v-col cols="12" md="3">
-            <v-radio-group v-model="pickDrop" row>
-              <v-radio label="Pick - Up" value="pick-up"></v-radio>
-              <v-radio label="Drop - Off" value="drop-off"></v-radio>
-            </v-radio-group>
-          </v-col>
-          <!-- Pick-Up and Drop-Off Fields -->
-          <v-col cols="12" md="3">
-            <v-select
-                label="Pick-Up City"
-                :items="cities"
-                v-model="pickUpCity"
-            ></v-select>
-            <v-select
-                label="Drop-Off City"
-                :items="cities"
-                v-model="dropOffCity"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="3">
-            <v-text-field label="Pick-Up Date" type="date" v-model="pickUpDate"></v-text-field>
-            <v-text-field label="Drop-Off Date" type="date" v-model="dropOffDate"></v-text-field>
-          </v-col>
-          <v-col cols="12" md="3">
-            <v-text-field label="Pick-Up Time" type="time" v-model="pickUpTime"></v-text-field>
-            <v-text-field label="Drop-Off Time" type="time" v-model="dropOffTime"></v-text-field>
-          </v-col>
-        </v-row>
+
 
         <v-divider class="my-6"></v-divider>
 
@@ -110,7 +92,7 @@
                 </div>
               </v-card-text>
               <v-card-actions>
-                <v-btn class="car-button" block>{{ car.price }}/day</v-btn>
+                <v-btn @click="GoToLogin()" class="car-button" block>{{ car.price }}/day</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -121,9 +103,16 @@
 </template>
 
 <script>
+import {auth} from "@/firebase.js";
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Import signInWithEmailAndPassword from Firebase
+
+
 export default {
   data() {
     return {
+      email: '',
+      password: '',
+      errorMessage: '',
       scrolled: false,
       pickDrop: 'pick-up',
       pickUpCity: null,
@@ -256,7 +245,26 @@ export default {
   methods: {
     handleScroll() {
       this.scrolled = window.scrollY > 0;
-    }
+    },
+    GoToLogin()
+    {
+      this.$router.push({ name: 'login' });
+    },
+    GoToRentCar()
+    {
+      this.$router.push({ name: 'rentCar' });
+    },
+    async login() {
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password);
+        console.log('User logged in successfully:', userCredential.user);
+        this.GoToRentCar()
+        // Handle successful login, such as redirecting the user to another page
+      } catch (error) {
+        this.errorMessage = error.message;
+        console.error('Error logging in:', error);
+      }
+    },
   }
 };
 </script>

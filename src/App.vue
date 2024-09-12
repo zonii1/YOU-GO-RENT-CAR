@@ -10,9 +10,7 @@
       <v-spacer></v-spacer>
 
       <div class="navbar-items">
-        <v-btn text class="navbar-text" href="#">HOME</v-btn>
-        <v-btn text class="navbar-text" href="#">POSLOVNICE</v-btn>
-        <v-btn text class="navbar-text" href="#">POSEBNE PONUDE</v-btn>
+        <v-btn text class="navbar-text" @click="$router.push('/')" href="#">HOME</v-btn>
         <v-btn text class="navbar-text" href="#">PITANJA</v-btn>
         <v-btn text class="navbar-text" href="#">KONTAKT</v-btn>
         <v-btn text class="navbar-text" href="#">VIŠE</v-btn>
@@ -20,147 +18,54 @@
 
       <v-spacer></v-spacer>
 
-      <v-text-field
-          solo
-          hide-details
-          placeholder="Type here"
-          class="mr-2 search-text-field"
-      ></v-text-field>
-      <v-btn class="search-button">Search</v-btn>
+      <!-- Display user's email if logged in -->
+      <div v-if="user">
+        <v-btn text class="navbar-text">{{ user.email }}</v-btn>
+        <v-btn @click="logout" color="error">Logout</v-btn>
+      </div>
+
+      <!-- Show login/signup options if not logged in -->
+      <div v-else>
+        <v-text-field
+            solo
+            hide-details
+            placeholder="Type here"
+            class="mr-2 search-text-field"
+        ></v-text-field>
+        <v-btn class="search-button">Search</v-btn>
+        <v-btn class="navbar-text" href="/login">Login</v-btn>
+        <v-btn class="navbar-text" href="/signup">Sign Up</v-btn>
+      </div>
     </v-app-bar>
+
     <router-view></router-view>
   </v-app>
 </template>
 
 <script>
+import { auth } from '@/firebase'; // Import Firebase Auth
+import { onAuthStateChanged, signOut } from 'firebase/auth'; // Import auth state and sign out
+
 export default {
   data() {
     return {
       scrolled: false,
-      pickDrop: 'pick-up',
-      pickUpCity: null,
-      dropOffCity: null,
-      pickUpDate: new Date().toISOString().substr(0, 10),  // Set current date
-      dropOffDate: null,
-      pickUpTime: null,
-      dropOffTime: null,
-      cities: ['Pula', 'Zagreb', 'Krk', 'Zadar', 'Split', 'Dubrovnik'],
-      popularCars: [
-        {
-          name: 'Audi TT',
-          type: 'Sport',
-          tank: '60L',
-          image: '../src/assets/auti/audi_tt.png',
-          transmission: 'Manual',
-          capacity: 2,
-          price: '$99.00'
-        },
-        {
-          name: 'Audi A3',
-          type: 'Hatchback',
-          tank: '50L',
-          image: '../src/assets/auti/audia3.png',
-          transmission: 'Manual',
-          capacity: 5,
-          price: '$80.00'
-        },
-        {
-          name: 'Audi A4',
-          type: 'Sedan',
-          tank: '54L',
-          image: '../src/assets/auti/audia4.png',
-          transmission: 'Manual',
-          capacity: 5,
-          price: '$80.00'
-        },
-        {
-          name: 'Audi RS6',
-          type: 'Sport',
-          tank: '73L',
-          image: '../src/assets/auti/audirs6.png',
-          transmission: 'Manual',
-          capacity: 5,
-          price: '$120.00'
-        }
-      ],
-      recommendedCars: [
-        {
-          name: 'BMW M2',
-          type: 'Sport',
-          tank: '52L',
-          image: '../src/assets/auti/bmw_m2.png',
-          transmission: 'Manual',
-          capacity: 5,
-          price: '$72.00'
-        },
-        {
-          name: 'BMW M3',
-          type: 'Sport',
-          tank: '59L',
-          image: '../src/assets/auti/bmw_m3.png',
-          transmission: 'Manual',
-          capacity: 5,
-          price: '$80.00'
-        },
-        {
-          name: 'BMW M4',
-          type: 'Sport',
-          tank: '59L',
-          image: '../src/assets/auti/bmw_m4.png',
-          transmission: 'Manual',
-          capacity: 5,
-          price: '$74.00'
-        },
-        {
-          name: 'New MG ZS',
-          type: 'SUV',
-          tank: '80L',
-          image: '../src/assets/auti/koenigsegg.png',
-          transmission: 'Manual',
-          capacity: 4,
-          price: '$80.00'
-        },
-        {
-          name: 'Golf 8R',
-          type: 'Sport',
-          tank: '50L',
-          image: '../src/assets/auti/Volkswqagen Golf R-Line 1.png',
-          transmission: 'Manual',
-          capacity: 5,
-          price: '$80.00'
-        },
-        {
-          name: 'Golf 7R',
-          type: 'Hatchback',
-          tank: '50L',
-          image: '../src/assets/auti/volkswagen_7r.png',
-          transmission: 'Manual',
-          capacity: 4,
-          price: '$76.00'
-        },
-        {
-          name: 'VW Arteon',
-          type: 'Sport',
-          tank: '60L',
-          image: '../src/assets/auti/png-transparent-car-volkswagen-arteon.png',
-          transmission: 'Manual',
-          capacity: 5,
-          price: '$80.00'
-        },
-        {
-          name: 'VW Passat',
-          type: 'Limousine',
-          tank: '66L',
-          image: '../src/assets/auti/png-transparent-car-volkswagen-passat.png',
-          transmission: 'Manual',
-          capacity: 5,
-          price: '$74.00'
-        }
-      ]
+      user: null, // Store the logged-in user information
     };
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll);
+
+    // Firebase auth listener to detect user login state
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in, store the user's email
+        this.user = user;
+      } else {
+        // No user is logged in
+        this.user = null;
+      }
+    });
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleScroll);
@@ -168,214 +73,18 @@ export default {
   methods: {
     handleScroll() {
       this.scrolled = window.scrollY > 0;
-    }
-  }
+    },
+    async logout() {
+      // Logout user from Firebase
+      await signOut(auth);
+      this.user = null;
+    },
+
+    goto
+  },
 };
 </script>
 
 <style scoped>
-/* Reset default margins and paddings */
-html, body, v-app, v-container {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
-/* Ensure the container takes full height */
-.main {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* Ensure the background image starts from the top and covers the entire area */
-.background-image {
-  background-image: url('../src/assets/background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-
-/* Make the navbar transparent by default */
-.transparent-navbar {
-  background-color: transparent !important;
-  box-shadow: none !important;
-}
-
-/* Apply a black background when scrolled */
-.scrolled-navbar {
-  background-color: rgba(0, 0, 0, 0.8) !important;
-  transition: background-color 0.3s ease;
-}
-
-/* Center the navbar items */
-.navbar-items {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Increase font size of navbar text and add hover effect */
-.navbar-text {
-  font-size: 18px;
-  color: white !important;
-  margin: 0 15px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.navbar-text:hover {
-  background-color: #ff4081;
-  color: white !important;
-  border-radius: 5px;
-}
-
-/* Ensure the text field and text color are visible on the transparent navbar */
-.white-text-field .v-input__control {
-  color: white !important;
-}
-
-/* Change search text field to white background */
-.search-text-field .v-input__control {
-  background-color: white !important;
-  color: black !important;
-}
-
-/* Style for search button to match login button */
-.search-button {
-  background-color: #ff4081 !important;
-  color: white !important;
-  font-weight: bold;
-}
-
-/* Login card styling */
-.login-card {
-  background-color: rgba(0, 0, 0, 0.8) !important;
-  color: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
-}
-
-.login-title {
-  color: white;
-  text-align: center;
-}
-
-.login-field {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-  margin-bottom: 10px;
-}
-
-.login-button {
-  background-color: #ff4081;
-  color: white;
-  font-weight: bold;
-}
-
-.signup-link {
-  color: #ff4081 !important;
-}
-
-.social-icons {
-  display: flex;
-  justify-content: center;
-}
-
-.social-icon-btn {
-  color: white;
-  margin: 0 5px;
-}
-
-/* Set the background image */
-.background-image {
-  background-image: url('../src/assets/background.png');
-  background-size: cover;
-  background-position: center;
-  height: 100vh;
-}
-
-/* Styling for the main title and subtitle */
-.text-content {
-  text-align: left;
-  padding-left: 60px;
-}
-
-.main-title {
-  font-size: 80px;
-  font-weight: bold;
-  color: white;
-}
-
-.highlight {
-  color: #ff4081;
-}
-
-.main-subtitle {
-  font-size: 24px;
-  color: white;
-  margin-top: -20px;
-}
-
-.join-us-button {
-  background-color: #ff4081;
-  color: white;
-  font-weight: bold;
-  margin-top: 20px;
-  margin-left: 60px;
-}
-
-/* Styling for car cards */
-.car-card {
-  background-color: #ff4081 !important;
-  color: white !important;
-  border-radius: 10px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.car-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-.car-button {
-  background-color: white !important;
-  color: #ff4081 !important;
-  font-weight: bold;
-}
-
-/* Styling for the Pick-Up and Drop-Off section */
-.pick-drop-section {
-  background-color: #ff4081 !important;
-  padding: 20px;
-  border-radius: 10px;
-  color: white;
-}
-
-.pick-drop-section .v-input__control,
-.pick-drop-section .v-radio,
-.pick-drop-section .v-select__selections {
-  color: white !important;
-}
-
-.pick-drop-section .v-input__control input {
-  color: white !important;
-}
-
-.pick-drop-section .v-radio-group__input .v-item--active .v-radio {
-  background-color: white !important;
-  border-color: white !important;
-}
-
-.pick-drop-section .v-select {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.pick-drop-section .v-text-field {
-  background-color: rgba(255, 255, 255, 0.1);
-}
+/* Your existing styles here */
 </style>
