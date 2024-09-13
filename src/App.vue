@@ -15,7 +15,7 @@
         <v-btn text class="navbar-text" @click="goToPage('contact')">KONTAKT</v-btn>
         <v-btn v-if="user" text class="navbar-text" @click="goToPage('rentCar')">Rent a Car</v-btn>
         <v-btn v-if="user && user.email === 'admin@gmail.com'" text class="navbar-text" @click="goToPage('addNewCar')">New Car</v-btn>
-        <v-btn v-if="user && user.email === 'admin@gmail.com'" text class="navbar-text" @click="goToPage('AdminCars')">Check Cars</v-btn>
+        <v-btn v-if="user && user.email === 'admin@gmail.com'" text class="navbar-text" @click="goToPage('AdminCars')">Reservations</v-btn>
       </div>
 
       <v-spacer></v-spacer>
