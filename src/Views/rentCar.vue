@@ -5,7 +5,9 @@
         <v-row class="mt-10">
           <v-col>
             <div class="text-content">
-              <h1 class="main-title">YOU GO<br /><span class="highlight">RENT</span></h1>
+              <h1 class="main-title">
+                YOU GO<br /><span class="highlight">RENT</span>
+              </h1>
             </div>
           </v-col>
         </v-row>
@@ -17,16 +19,40 @@
         <v-row class="pick-drop-section d-flex justify-center">
           <!-- Pick-Up and Drop-Off Fields -->
           <v-col cols="12" md="3">
-            <v-select label="Pick-Up City" :items="cities" v-model="pickUpCity"></v-select>
-            <v-select label="Drop-Off City" :items="cities" v-model="dropOffCity"></v-select>
+            <v-select
+                label="Pick-Up City"
+                :items="cities"
+                v-model="pickUpCity"
+            ></v-select>
+            <v-select
+                label="Drop-Off City"
+                :items="cities"
+                v-model="dropOffCity"
+            ></v-select>
           </v-col>
           <v-col cols="12" md="3">
-            <v-text-field label="Pick-Up Date" type="date" v-model="pickUpDate"></v-text-field>
-            <v-text-field label="Drop-Off Date" type="date" v-model="dropOffDate"></v-text-field>
+            <v-text-field
+                label="Pick-Up Date"
+                type="date"
+                v-model="pickUpDate"
+            ></v-text-field>
+            <v-text-field
+                label="Drop-Off Date"
+                type="date"
+                v-model="dropOffDate"
+            ></v-text-field>
           </v-col>
           <v-col cols="12" md="3">
-            <v-text-field label="Pick-Up Time" type="time" v-model="pickUpTime"></v-text-field>
-            <v-text-field label="Drop-Off Time" type="time" v-model="dropOffTime"></v-text-field>
+            <v-text-field
+                label="Pick-Up Time"
+                type="time"
+                v-model="pickUpTime"
+            ></v-text-field>
+            <v-text-field
+                label="Drop-Off Time"
+                type="time"
+                v-model="dropOffTime"
+            ></v-text-field>
           </v-col>
         </v-row>
 
@@ -42,12 +68,24 @@
         <!-- Cars fetched from Firestore -->
         <v-row>
           <!-- Update the Car Card to Link to CarDetail.vue -->
-          <v-col v-for="car in popularCars" :key="car.id" cols="12" sm="6" md="3">
-            <v-card class="car-card" @click="$router.push({ name: 'CarDetail', params: { id: car.id } })">
+          <v-col
+              v-for="car in popularCars"
+              :key="car.id"
+              cols="12"
+              sm="6"
+              md="3"
+          >
+            <v-card
+                class="car-card"
+                @click="$router.push({ name: 'CarDetail', params: { id: car.id } })"
+            >
               <v-card-title>{{ car.carName }}</v-card-title>
               <v-card-subtitle>{{ car.carType }}</v-card-subtitle>
               <v-card-text>
-                <v-img :src="car.imageUrls[0]" cover></v-img>
+                <v-img
+                    :src="car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : 'path/to/placeholder.jpg'"
+                    cover
+                ></v-img>
                 <div class="d-flex justify-space-between">
                   <span>{{ car.tank }}</span>
                   <span>{{ car.transmission }}</span>
@@ -55,11 +93,12 @@
                 </div>
               </v-card-text>
               <v-card-actions>
-                <v-btn class="car-button" block>{{ car.pricePerDay }} USD/day</v-btn>
+                <v-btn class="car-button" block
+                >{{ car.pricePerDay }} USD/day</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-col>
-
         </v-row>
       </v-container>
     </v-container>
@@ -86,31 +125,13 @@ export default {
   },
   async mounted() {
     // Fetch car data from Firestore when component is mounted
-    this.fetchCarsFromFirestore();
+    await this.fetchCarsFromFirestore();
     window.addEventListener('scroll', this.handleScroll);
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
-
-    async fetchCarDetails() {
-      try {
-        const carRef = doc(db, "cars", this.id); // Reference to the specific car document
-        const carSnap = await getDoc(carRef);
-        if (carSnap.exists()) {
-          this.car = carSnap.data(); // Set the car details
-        } else {
-          console.log("No such car found!");
-        }
-      } catch (error) {
-        console.error("Error fetching car details:", error);
-      }
-    },
-    rentCar() {
-      // Redirect to the payment page with the car ID
-      this.$router.push({ name: 'PaymentForm', params: { id: this.id } });
-    },
     handleScroll() {
       this.scrolled = window.scrollY > 0;
     },
@@ -118,13 +139,26 @@ export default {
       try {
         const carsCollection = collection(db, 'cars'); // Reference to the 'cars' collection in Firestore
         const carsSnapshot = await getDocs(carsCollection);
-        const carsList = carsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const carsList = carsSnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            carName: data.carName || 'No Name',
+            carType: data.carType || 'Unknown Type',
+            imageUrls: data.imageUrls || [],
+            tank: data.tank || 'Unknown',
+            transmission: data.transmission || 'Unknown',
+            seatingCapacity: data.seatingCapacity || 'Unknown',
+            pricePerDay: data.pricePerDay || 'N/A',
+            // Include any other fields you need
+          };
+        });
         this.popularCars = carsList; // Set the fetched cars to the `popularCars` array
       } catch (error) {
         console.error('Error fetching cars: ', error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

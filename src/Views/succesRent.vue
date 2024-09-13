@@ -16,7 +16,7 @@
       </v-card-text>
 
       <v-card-actions class="justify-center">
-        <v-btn color="primary" @click="$router.push('/')">Back to Home</v-btn>
+        <v-btn color="primary" @click="$router.push('/home')">Back to Home</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>

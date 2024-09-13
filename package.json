@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mdi/font": "^7.0.96",
     "firebase": "^10.13.1",
     "vee-validate": "^4.13.2",
     "vue": "^3.4.37",

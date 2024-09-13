@@ -1,33 +1,96 @@
 <template>
   <v-container fluid class="car-detail-container">
-    <!-- Car Image Carousel (Display when car data is available) -->
+    <v-btn color="pink" href="/rentCar" icon=""><</v-btn>
+    <!-- Car Details Section -->
     <v-row v-if="car" class="mt-5">
-      <v-col cols="12">
-        <v-carousel hide-delimiters height="400">
-          <!-- Loop through the car images to create carousel items -->
-          <v-carousel-item v-for="(image, index) in car.imageUrls" :key="index">
+      <!-- Image Carousel -->
+      <v-col cols="12" md="7">
+        <v-carousel
+            hide-delimiters
+            height="400"
+            show-arrows-on-hover
+            class="carousel-elevation"
+        >
+          <v-carousel-item
+              v-for="(image, index) in car.imageUrls"
+              :key="index"
+          >
             <v-img :src="image" height="400px" cover></v-img>
           </v-carousel-item>
         </v-carousel>
       </v-col>
 
-      <!-- Car Details -->
-      <v-col cols="12" sm="6" class="mt-4">
-        <h1>{{ car.carName }}</h1>
-        <p><strong>Type:</strong> {{ car.carType }}</p>
-        <p><strong>Price Per Day:</strong> ${{ car.pricePerDay }}</p>
-        <p><strong>Seating Capacity:</strong> {{ car.seatingCapacity }}</p>
-        <p><strong>Transmission:</strong> {{ car.transmission }}</p>
-        <p><strong>Fuel Type:</strong> {{ car.fuelType }}</p>
+      <!-- Car Information -->
+      <v-col cols="12" md="5">
+        <v-card outlined class="pa-4">
+          <v-card-title class="headline">
+            {{ car.carName }}
+          </v-card-title>
+          <v-card-subtitle class="subtitle-1 mb-3">
+            {{ car.carType }}
+          </v-card-subtitle>
 
-        <v-btn color="primary" large @click="rentCar">Rent It</v-btn>
+          <v-divider></v-divider>
+
+          <v-list dense class="mt-3">
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon color="primary">mdi-cash</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Price Per Day: ${{ car.pricePerDay }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon color="primary">mdi-seat-recline-normal</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Seating Capacity: {{ car.seatingCapacity }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon color="primary">mdi-steering</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Transmission: {{ car.transmission }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon color="primary">mdi-fuel</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Fuel Type: {{ car.fuelType }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+
+          <v-card-actions class="mt-4">
+            <v-btn color="primary" large @click="rentCar">
+              Rent It
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-col>
     </v-row>
 
-    <!-- Loading state -->
+    <!-- Loading State -->
     <v-row v-else>
       <v-col cols="12" class="text-center">
-        <v-progress-circular indeterminate></v-progress-circular>
+        <v-progress-circular indeterminate color="primary"></v-progress-circular>
         <p>Loading car details...</p>
       </v-col>
     </v-row>
@@ -39,7 +102,7 @@ import { db } from "@/firebase"; // Import Firebase
 import { doc, getDoc } from "firebase/firestore"; // Firestore methods
 
 export default {
-  props: ['id'], // Get the car ID from the route
+  props: ["id"], // Get the car ID from the route
   data() {
     return {
       car: null, // To store car details
@@ -70,12 +133,12 @@ export default {
     rentCar() {
       // Redirect to the payment page with car ID and carName
       this.$router.push({
-        name: 'PaymentForm',
-        params: {id: this.id},
-        query: {carName: this.car.carName}
+        name: "PaymentForm",
+        params: { id: this.id },
+        query: { carName: this.car.carName },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -84,8 +147,20 @@ export default {
   padding: 20px;
 }
 
-.v-carousel-item {
-  height: 400px;
-  background-color: transparent;
+.carousel-elevation {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.v-card-title,
+.v-card-subtitle {
+  text-align: center;
+}
+
+.v-card-actions {
+  justify-content: center;
+}
+
+.v-list-item-icon {
+  margin-right: 12px;
 }
 </style>

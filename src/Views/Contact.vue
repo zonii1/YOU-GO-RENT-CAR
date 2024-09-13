@@ -1,6 +1,6 @@
 <template>
   <v-container class="mt-5">
-    <v-card class="mx-auto" width="600">
+    <v-card color="pink" class="mx-auto" width="600">
       <v-card-title>
         <h2>Contact Us</h2>
       </v-card-title>

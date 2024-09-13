@@ -12,7 +12,7 @@
                 Experience the joy of the open road with our top rental options. <br />
                 Every kilometer feels even sweeter!
               </p>
-              <v-btn class="join-us-button">JOIN US</v-btn>
+              <v-btn href="/register" class="join-us-button">JOIN US</v-btn>
             </div>
           </v-col>
 
@@ -38,26 +38,10 @@
                 <v-divider class="my-4"></v-divider>
                 <p class="text-center">
                   Don't have an account?<br />
-                  <v-btn text class="signup-link" href="#">Sign up</v-btn> here
+                  <v-btn text class="signup-link" href="#">Sign up</v-btn>
                 </p>
-                <p class="text-center">Log in with</p>
-                <div class="social-icons">
-                  <v-btn icon class="social-icon-btn">
-                    <v-icon>mdi-facebook</v-icon>
-                  </v-btn>
-                  <v-btn icon class="social-icon-btn">
-                    <v-icon>mdi-instagram</v-icon>
-                  </v-btn>
-                  <v-btn icon class="social-icon-btn">
-                    <v-icon>mdi-twitter</v-icon>
-                  </v-btn>
-                  <v-btn icon class="social-icon-btn">
-                    <v-icon>mdi-google</v-icon>
-                  </v-btn>
-                  <v-btn icon class="social-icon-btn">
-                    <v-icon>mdi-skype</v-icon>
-                  </v-btn>
-                </div>
+
+
               </v-card-text>
             </v-card>
           </v-col>

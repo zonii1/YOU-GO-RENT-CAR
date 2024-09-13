@@ -10,6 +10,8 @@ import PaymentForm from "@/Views/PaymentForm.vue";
 import successRent from "@/Views/succesRent.vue";
 import Contact from "@/Views/Contact.vue";
 import QandA from "@/Views/QandA.vue";
+import more from "@/Views/more.vue";
+import AdminCars from "@/Views/AdminCars.vue";
 
 
 const routes = [
@@ -51,6 +53,13 @@ const routes = [
         name: 'QandA',
         component: QandA,
     },
+    {
+        path: '/AdminCars',
+        name: 'AdminCars',
+        component: AdminCars,
+    },
+
+
 
 
     {
