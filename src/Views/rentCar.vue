@@ -20,14 +20,14 @@
 
         <v-divider class="my-6"></v-divider>
 
-        <!-- Popular Cars Section -->
+        <!-- Popular CarAdmin.vue Section -->
         <v-row>
           <v-col>
             <h2>Popular Cars</h2>
           </v-col>
         </v-row>
 
-        <!-- Cars fetched from Firestore -->
+        <!-- CarAdmin.vue fetched from Firestore -->
         <v-row>
           <!-- Update the Car Card to Link to CarDetail.vue -->
           <v-col
@@ -115,6 +115,7 @@ export default {
             transmission: data.transmission || 'Unknown',
             seatingCapacity: data.seatingCapacity || 'Unknown',
             pricePerDay: data.pricePerDay || 'N/A',
+            available: data.available || 'N/A',
             // Include any other fields you need
           };
         });

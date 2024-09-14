@@ -12,6 +12,8 @@ import Contact from "@/Views/Contact.vue";
 import QandA from "@/Views/QandA.vue";
 import more from "@/Views/more.vue";
 import AdminCars from "@/Views/AdminCars.vue";
+import ContactAdmin from "@/Views/ContactAdmin.vue";
+import CarAdmin from "@/Views/CarAdmin.vue";
 
 
 const routes = [
@@ -66,6 +68,16 @@ const routes = [
         path: '/rentCar',
         name: 'rentCar',
         component: rentCar,
+    },
+    {
+        path: '/ContactAdmin',
+        name: 'ContactAdmin',
+        component: ContactAdmin,
+    },
+    {
+        path: '/CarsAdmin',
+        name: 'CarsAdmin',
+        component: CarAdmin,
     },
     {
         path: '/car/:id', // Dynamic route to load the selected car's details

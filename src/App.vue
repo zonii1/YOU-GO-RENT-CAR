@@ -6,7 +6,7 @@
         :class="scrolled ? 'scrolled-navbar' : 'transparent-navbar'"
     >
       <v-toolbar-title></v-toolbar-title>
-      <v-img src="/yu logo.PNG"> </v-img>
+      <v-img src="/yu logo.png"> </v-img>
       <v-spacer></v-spacer>
 
       <div class="navbar-items ">
@@ -16,6 +16,8 @@
         <v-btn text class="navbar-text" @click="goToPage('contact')">KONTAKT</v-btn>
         <v-btn v-if="user && user.email === 'admin@gmail.com'" text class="navbar-text" @click="goToPage('addNewCar')">New Car</v-btn>
         <v-btn v-if="user && user.email === 'admin@gmail.com'" text class="navbar-text" @click="goToPage('AdminCars')">Reservations</v-btn>
+        <v-btn v-if="user && user.email === 'admin@gmail.com'" text class="navbar-text" @click="goToPage('ContactAdmin')">ContactAdmin</v-btn>
+        <v-btn v-if="user && user.email === 'admin@gmail.com'" text class="navbar-text" @click="goToPage('CarsAdmin')">CarsAdmin</v-btn>
       </div>
 
       <v-spacer></v-spacer>

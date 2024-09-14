@@ -238,13 +238,13 @@ export default {
             timestamp: new Date(),
           });
 
-          // Step 2: Create or update the car's availability in Firestore
-          const carRef = doc(db, 'cars', this.carRegistrationNumber);
-          await setDoc(carRef, {
-            available: false,
-            carName: this.carName,
-            registrationNumber: this.carRegistrationNumber,
-          });
+          // // Step 2: Create or update the car's availability in Firestore
+          // const carRef = doc(db, 'cars', this.carRegistrationNumber);
+          // await setDoc(carRef, {
+          //   available: false,
+          //   carName: this.carName,
+          //   registrationNumber: this.carRegistrationNumber,
+          // });
 
           // Step 3: Show a success message
           alert(

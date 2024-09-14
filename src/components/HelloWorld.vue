@@ -105,7 +105,7 @@
 
         <v-divider class="my-6"></v-divider>
 
-        <!-- Popular Cars Section -->
+        <!-- Popular CarAdmin.vue Section -->
         <v-row>
           <v-col>
             <h2>Popular Cars</h2>
@@ -133,7 +133,7 @@
 
         <v-divider class="my-6"></v-divider>
 
-        <!-- Recommendation Cars Section -->
+        <!-- Recommendation CarAdmin.vue Section -->
         <v-row>
           <v-col>
             <h2>Recommendation Cars</h2>
