@@ -52,35 +52,6 @@
       <v-container>
         <!-- Pick-Up and Drop-Off Section -->
 
-
-        <v-divider class="my-6"></v-divider>
-
-        <!-- Popular Cars Section -->
-        <v-row>
-          <v-col>
-            <h2>Popular Cars</h2>
-          </v-col>
-        </v-row>
-        <v-row>
-          <!-- Ensure all columns use the same width and class -->
-          <v-col v-for="car in popularCars" :key="car.name" cols="12" sm="6" md="3">
-            <v-card class="car-card">
-              <v-card-title>{{ car.name }}</v-card-title>
-              <v-card-subtitle>{{ car.type }}</v-card-subtitle>
-              <v-card-text>
-                <v-img :width="300" cover :src="car.image"></v-img>
-                <div class="d-flex justify-space-between">
-                  <span>{{ car.tank }}</span>
-                  <span>{{ car.transmission }}</span>
-                  <span>{{ car.capacity }} People</span>
-                </div>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn @click="GoToLogin()" class="car-button" block>{{ car.price }}/day</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
       </v-container>
     </v-container>
   </v-app>

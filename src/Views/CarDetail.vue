@@ -15,14 +15,14 @@
               v-for="(image, index) in car.imageUrls"
               :key="index"
           >
-            <v-img :src="image" height="400px" cover></v-img>
+            <v-img :src="image" height="400px" max-height="1000" width="100%"></v-img>
           </v-carousel-item>
         </v-carousel>
       </v-col>
 
       <!-- Car Information -->
       <v-col cols="12" md="5">
-        <v-card outlined class="pa-4">
+        <v-card  outlined class="pa-4">
           <v-card-title class="headline">
             {{ car.carName }}
           </v-card-title>
@@ -33,6 +33,7 @@
           <v-divider></v-divider>
 
           <v-list dense class="mt-3">
+            <div class="d-flex justify-space-evenly">
             <v-list-item>
               <v-list-item-icon>
                 <v-icon color="primary">mdi-cash</v-icon>
@@ -54,7 +55,9 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+            </div>
 
+            <div class="d-flex justify-space-evenly">
             <v-list-item>
               <v-list-item-icon>
                 <v-icon color="primary">mdi-steering</v-icon>
@@ -76,10 +79,12 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+
+            </div>
           </v-list>
 
           <v-card-actions class="mt-4">
-            <v-btn color="primary" large @click="rentCar">
+            <v-btn  base-color="red"   large @click="rentCar">
               Rent It
             </v-btn>
           </v-card-actions>

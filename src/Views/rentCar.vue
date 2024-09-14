@@ -16,45 +16,7 @@
       <!-- Car Rental Section -->
       <v-container>
         <!-- Pick-Up and Drop-Off Section -->
-        <v-row class="pick-drop-section d-flex justify-center">
-          <!-- Pick-Up and Drop-Off Fields -->
-          <v-col cols="12" md="3">
-            <v-select
-                label="Pick-Up City"
-                :items="cities"
-                v-model="pickUpCity"
-            ></v-select>
-            <v-select
-                label="Drop-Off City"
-                :items="cities"
-                v-model="dropOffCity"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="3">
-            <v-text-field
-                label="Pick-Up Date"
-                type="date"
-                v-model="pickUpDate"
-            ></v-text-field>
-            <v-text-field
-                label="Drop-Off Date"
-                type="date"
-                v-model="dropOffDate"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="3">
-            <v-text-field
-                label="Pick-Up Time"
-                type="time"
-                v-model="pickUpTime"
-            ></v-text-field>
-            <v-text-field
-                label="Drop-Off Time"
-                type="time"
-                v-model="dropOffTime"
-            ></v-text-field>
-          </v-col>
-        </v-row>
+
 
         <v-divider class="my-6"></v-divider>
 
@@ -72,10 +34,12 @@
               v-for="car in popularCars"
               :key="car.id"
               cols="12"
+
               sm="6"
               md="3"
           >
             <v-card
+
                 class="car-card"
                 @click="$router.push({ name: 'CarDetail', params: { id: car.id } })"
             >
@@ -83,11 +47,12 @@
               <v-card-subtitle>{{ car.carType }}</v-card-subtitle>
               <v-card-text>
                 <v-img
+
+                    max-height="250"
                     :src="car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : 'path/to/placeholder.jpg'"
                     cover
                 ></v-img>
-                <div class="d-flex justify-space-between">
-                  <span>{{ car.tank }}</span>
+                <div class="d-flex justify-space-between ma-2">
                   <span>{{ car.transmission }}</span>
                   <span>{{ car.seatingCapacity }} People</span>
                 </div>

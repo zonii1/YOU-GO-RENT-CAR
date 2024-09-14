@@ -1,11 +1,12 @@
 <template>
+
   <v-container class="mt-5">
-    <h2>All Car Reservations</h2>
+    <h2 class="mt-2">All Car Reservations</h2>
     <v-data-table
-        :headers="headers"
         :items="reservations"
-        class="elevation-1"
+        class="elevation-1 mt-3"
         :items-per-page="10"
+        item-key="id"
     >
       <template v-slot:item.timestamp="{ item }">
         {{ formatDate(item.timestamp) }}
@@ -15,24 +16,25 @@
 </template>
 
 <script>
-import { db } from '@/firebase'; // Import Firestore
-import { collection, getDocs } from 'firebase/firestore'; // Firestore methods
+import { db } from '@/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 export default {
   data() {
     return {
       reservations: [],
       headers: [
-        { text: 'Car Name', value: 'carName' },
-        { text: 'Registration Number', value: 'carRegistrationNumber' },
-        { text: 'Pickup City', value: 'pickupCity' },
-        { text: 'Dropoff City', value: 'dropoffCity' },
-        { text: 'Pickup Date', value: 'pickupDate' },
-        { text: 'Dropoff Date', value: 'dropoffDate' },
-        { text: 'Pickup Time', value: 'pickupTime' },
-        { text: 'Dropoff Time', value: 'dropoffTime' },
-        { text: 'Cardholder Name', value: 'cardName' },
-        { text: 'Reservation Time', value: 'timestamp' },
+        'No.',
+        'Car Name',
+        'Registration Number',
+        'Pickup City',
+        'Dropoff City',
+        'Pickup Date',
+        'Dropoff Date',
+        'Pickup Time',
+        'Dropoff Time',
+        'Cardholder Name',
+        'Reservation Time',
       ],
     };
   },
@@ -43,19 +45,20 @@ export default {
     async fetchReservations() {
       const reservationsRef = collection(db, 'reservations');
       const snapshot = await getDocs(reservationsRef);
-      this.reservations = snapshot.docs.map((doc) => doc.data());
+      this.reservations = snapshot.docs.map((doc, index) => ({
+        id: doc.id,
+        index: index + 1,
+        ...doc.data(),
+      }));
     },
     formatDate(timestamp) {
-      const date = timestamp.toDate();
-      return date.toLocaleString();
+      if (timestamp && timestamp.toDate) {
+        const date = timestamp.toDate();
+        return date.toLocaleString();
+      }
+      return '';
     },
   },
 };
 </script>
 
-<style scoped>
-.v-container {
-  max-width: 1000px;
-  margin: auto;
-}
-</style>
