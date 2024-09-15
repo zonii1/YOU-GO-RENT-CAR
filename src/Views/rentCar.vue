@@ -6,7 +6,7 @@
           <v-col>
             <div class="text-content">
               <h1 class="main-title">
-                YOU GO<br /><span class="highlight">RENT</span>
+                YOU GO<br/><span class="highlight">RENT</span>
               </h1>
             </div>
           </v-col>
@@ -31,14 +31,17 @@
         <v-row>
           <!-- Update the Car Card to Link to CarDetail.vue -->
           <v-col
+
               v-for="car in popularCars"
               :key="car.id"
               cols="12"
 
               sm="6"
               md="3"
+
           >
             <v-card
+                :disabled="car.available !== true"
 
                 class="car-card"
                 @click="$router.push({ name: 'CarDetail', params: { id: car.id } })"
@@ -58,9 +61,8 @@
                 </div>
               </v-card-text>
               <v-card-actions>
-                <v-btn class="car-button" block
-                >{{ car.pricePerDay }} USD/day</v-btn
-                >
+                <v-btn v-if="car.available !== true" class="car-button" block>unavailable</v-btn>
+                <v-btn v-if="car.available === true" class="car-button" block>{{ car.pricePerDay }} USD/day</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -71,8 +73,8 @@
 </template>
 
 <script>
-import { db } from '@/firebase'; // Import Firestore
-import { collection, getDocs } from 'firebase/firestore'; // Firestore methods
+import {db} from '@/firebase'; // Import Firestore
+import {collection, getDocs} from 'firebase/firestore'; // Firestore methods
 
 export default {
   data() {
@@ -137,28 +139,34 @@ export default {
   background-repeat: no-repeat;
   height: 30vh;
 }
+
 .text-content {
   text-align: left;
   padding-left: 60px;
 }
+
 .main-title {
   font-size: 80px;
   font-weight: bold;
   color: white;
 }
+
 .highlight {
   color: #ff4081;
 }
+
 .car-card {
   background-color: #ff4081 !important;
   color: white !important;
   border-radius: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .car-card:hover {
   transform: translateY(-10px);
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
 }
+
 .car-button {
   background-color: white !important;
   color: #ff4081 !important;

@@ -81,13 +81,7 @@
               </v-col>
 
               <!-- Availability -->
-              <v-col cols="12">
-                <v-checkbox
-                    v-model="form.available"
-                    label="Available for Rent"
-                    hint="Check if car is available for rent"
-                ></v-checkbox>
-              </v-col>
+
             </v-row>
 
             <!-- Upload Car Images -->
@@ -160,7 +154,7 @@ const form = ref({
   seatingCapacity: null,
   fuelType: '',
   transmission: '',
-  available: false,
+  available: true,
 });
 
 // Dropdown options
@@ -214,7 +208,7 @@ const submitForm = async () => {
       seatingCapacity: form.value.seatingCapacity,
       fuelType: form.value.fuelType,
       transmission: form.value.transmission,
-      available: form.value.available,
+      available: true,
       imageUrls: imageUrls,
     };
 
